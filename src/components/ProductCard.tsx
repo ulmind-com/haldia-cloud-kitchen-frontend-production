@@ -80,7 +80,7 @@ const ProductCard = ({ item }: ProductCardProps) => {
         whileHover={{ y: -4 }}
         transition={{ duration: 0.3 }}
         onClick={() => setIsDrawerOpen(true)}
-        className={`group flex gap-4 rounded-2xl border bg-card p-4 shadow-sm transition-all hover:cursor-pointer hover:shadow-lg ${item.hasDiscount
+        className={`group flex gap-4 h-full rounded-2xl border bg-card p-4 shadow-sm transition-all hover:cursor-pointer hover:shadow-lg ${item.hasDiscount
           ? 'border-green-500/30 ring-1 ring-green-500/10 hover:border-green-500/50'
           : 'border-border'
           }`}
@@ -138,8 +138,8 @@ const ProductCard = ({ item }: ProductCardProps) => {
         </div>
 
         {/* Image + Cart */}
-        <div className="relative flex-shrink-0">
-          <div className={`h-28 w-28 overflow-hidden rounded-xl ${item.hasDiscount ? 'ring-2 ring-green-500/20' : ''}`}>
+        <div className="flex flex-col items-center flex-shrink-0">
+          <div className={`relative h-28 w-28 overflow-hidden rounded-xl ${item.hasDiscount ? 'ring-2 ring-green-500/20' : ''}`}>
             <img
               src={imageUrl}
               alt={item.name}
@@ -162,7 +162,7 @@ const ProductCard = ({ item }: ProductCardProps) => {
           </div>
 
           {/* Add / Counter */}
-          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2">
+          <div className="mt-2 flex w-full justify-center">
             {cartItem ? (
               <motion.div
                 initial={{ scale: 0.8 }}

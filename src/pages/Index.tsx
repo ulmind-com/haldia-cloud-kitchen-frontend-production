@@ -290,7 +290,7 @@ const Index = () => {
               </span>
             </div>
 
-            <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 scroll-smooth no-scrollbar">
+            <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 scroll-smooth no-scrollbar snap-x snap-mandatory">
               {dealItems.map((item: any) => {
                 let effectiveItem = item;
                 if (typeof item.category === "string" && categories) {
@@ -301,7 +301,7 @@ const Index = () => {
                 }
 
                 return (
-                  <div key={`deal-${item._id}`} className="flex-shrink-0 w-[85vw] sm:w-[320px] pb-4">
+                  <div key={`deal-${item._id}`} className="flex-shrink-0 w-[85vw] sm:w-[320px] pb-4 snap-start">
                     <ProductCard item={effectiveItem} />
                   </div>
                 );
@@ -329,7 +329,7 @@ const Index = () => {
         </div>
 
         {menuLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-stretch">
             {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
@@ -347,7 +347,7 @@ const Index = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-stretch"
           >
             {menuItems?.map((item: any) => {
               // Fix: If category is just an ID (string), look it up from cached categories to show Name instead of ID

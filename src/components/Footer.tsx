@@ -16,10 +16,10 @@ const Footer = () => {
         <footer className="border-t border-border bg-card mt-auto">
             <div className="mx-auto max-w-screen-xl px-4 sm:px-6 py-10">
                 {/* Top row */}
-                <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between items-center sm:items-start text-center sm:text-left">
 
                     {/* Brand */}
-                    <div className="flex flex-col gap-3 max-w-xs">
+                    <div className="flex flex-col gap-3 max-w-xs items-center sm:items-start">
                         <div className="flex items-center gap-2.5">
                             {restaurant?.logo ? (
                                 <img
@@ -51,14 +51,14 @@ const Footer = () => {
                     </div>
 
                     {/* Quick links */}
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 items-center sm:items-start">
                         <p
                             className="text-xs font-semibold uppercase tracking-widest text-muted-foreground"
                             style={{ fontFamily: "'Inter', sans-serif" }}
                         >
                             Quick Links
                         </p>
-                        <nav className="flex flex-col gap-1.5">
+                        <nav className="flex flex-col gap-1.5 items-center sm:items-start">
                             {[
                                 { label: "Menu", to: "/" },
                                 { label: "My Orders", to: "/my-orders" },
