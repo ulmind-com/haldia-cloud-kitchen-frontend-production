@@ -104,7 +104,7 @@ export function ProductDetailDrawer({
     return (
         <AnimatePresence>
             {isOpen && (
-                <>
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
                     {/* Backdrop */}
                     <motion.div
                         key="backdrop"
@@ -112,7 +112,7 @@ export function ProductDetailDrawer({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                         onClick={onClose}
                     />
 
@@ -123,7 +123,7 @@ export function ProductDetailDrawer({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.96, y: "100%" }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
-                        className="fixed bottom-0 left-0 right-0 z-50 mx-auto flex h-fit max-h-[90vh] w-full flex-col bg-background sm:top-1/2 sm:-translate-y-1/2 sm:bottom-auto sm:w-[480px] sm:rounded-2xl shadow-2xl"
+                        className="relative z-10 flex h-fit max-h-[90vh] w-full flex-col bg-background rounded-t-2xl sm:rounded-2xl sm:w-[480px] shadow-2xl overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close Button */}
@@ -280,7 +280,7 @@ export function ProductDetailDrawer({
                             </div>
                         )}
                     </motion.div>
-                </>
+                </div>
             )}
         </AnimatePresence>
     );

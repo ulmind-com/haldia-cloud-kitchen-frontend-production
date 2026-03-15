@@ -60,7 +60,7 @@ const CategoryCarousel = ({ categories, selected, onSelect }: CategoryCarouselPr
       className="overflow-x-auto scrollbar-hide"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
-      <div className="flex flex-col gap-3 min-w-max px-1 py-1">
+      <div className="flex flex-col gap-2 w-max px-0 py-0">
         {/* Top Row */}
         <div className="flex gap-4">
           {topRow.map((item) => renderItem(item as any))}
