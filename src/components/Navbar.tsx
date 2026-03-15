@@ -28,13 +28,6 @@ const Navbar = () => {
   const isAdminUser = isAuthenticated() && isAdmin();
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
 
-  console.log("Navbar Debug:", {
-    isAuthenticated: isAuthenticated(),
-    isAdmin: isAdmin(),
-    userRole: user?.role,
-    selectedAddressId: selectedAddress?._id || selectedAddress?.id
-  });
-
   // ── Location display text ──────────────────────────────────────────────────
   const locationLabel = selectedAddress
     ? selectedAddress.type === "HOME"
