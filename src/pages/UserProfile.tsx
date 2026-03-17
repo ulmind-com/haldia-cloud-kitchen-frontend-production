@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { userApi, uploadApi } from "@/api/axios";
+import { userApi, uploadApi, authApi } from "@/api/axios";
 import { useAuthStore } from "@/store/useAuthStore";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
-import { LogOut, Mail, Phone, Shield, Calendar, Edit2, Save, X, Pencil, ArrowLeft } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { LogOut, Mail, Phone, Shield, Calendar, Edit2, Save, X, Pencil, ArrowLeft, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { resolveImageURL } from "@/lib/image-utils";
@@ -16,6 +16,12 @@ const UserProfile = () => {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: "", mobile: "", address: "" });
   const [uploadingImage, setUploadingImage] = useState(false);
+  
+  // Password Change State
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ oldPassword: "", newPassword: "", confirmPassword: "" });
+  const [updatingPassword, setUpdatingPassword] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: profileData, isLoading } = useQuery({
@@ -66,6 +72,33 @@ const UserProfile = () => {
       toast.error("Failed to upload image");
     } finally {
       setUploadingImage(false);
+    }
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast.error("New passwords do not match");
+      return;
+    }
+    if (passwordForm.newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    setUpdatingPassword(true);
+    try {
+      await authApi.changePassword({
+        oldPassword: passwordForm.oldPassword,
+        newPassword: passwordForm.newPassword,
+      });
+      toast.success("Password updated successfully!");
+      setChangingPassword(false);
+      setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update password");
+    } finally {
+      setUpdatingPassword(false);
     }
   };
 
@@ -241,6 +274,91 @@ const UserProfile = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Security Block */}
+          <div className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-base font-bold text-foreground">Security</h3>
+              {!changingPassword ? (
+                <button
+                  onClick={() => setChangingPassword(true)}
+                  className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary transition-colors hover:bg-primary/20"
+                >
+                  <Lock className="h-3.5 w-3.5" /> Change Password
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setChangingPassword(false);
+                    setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+                  }}
+                  className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
+                >
+                  <X className="h-3.5 w-3.5" /> Cancel
+                </button>
+              )}
+            </div>
+
+            <AnimatePresence>
+              {changingPassword && (
+                <motion.form
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden space-y-4"
+                  onSubmit={handlePasswordChange}
+                >
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Current Password
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={passwordForm.oldPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+                      className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={passwordForm.newPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                      className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Confirm New Password
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={passwordForm.confirmPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                      className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={updatingPassword}
+                    className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 disabled:opacity-50"
+                  >
+                    {updatingPassword ? "Updating Password..." : "Update Password"}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
+            
+            {!changingPassword && (
+              <p className="text-sm text-muted-foreground">Ensure your account is using a long, random password to stay secure.</p>
+            )}
           </div>
         </motion.div>
       </div>

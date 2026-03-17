@@ -17,11 +17,11 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthModalOpen: boolean;
-  authMode: "login" | "register";
+  authMode: "login" | "register" | "forgotPassword";
   setUser: (user: User | null) => void;
   setToken: (token: string | null) => void;
   logout: () => void;
-  openAuthModal: (mode?: "login" | "register") => void;
+  openAuthModal: (mode?: "login" | "register" | "forgotPassword") => void;
   closeAuthModal: () => void;
   isAuthenticated: () => boolean;
   isAdmin: () => boolean;
