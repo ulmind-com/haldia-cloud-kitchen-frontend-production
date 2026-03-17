@@ -13,6 +13,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import MyOrders from "./pages/MyOrders";
 import AddressesPage from "./pages/AddressesPage";
 import OrderTracking from "./pages/OrderTracking";
+import ResetPassword from "./pages/ResetPassword";
 import Navbar from "./components/Navbar";
 import CartDrawer from "./components/CartDrawer";
 import CartBar from "./components/CartBar";
@@ -209,6 +210,7 @@ const AppContent = () => {
           }
         />
         <Route path="/vlogs" element={<VlogGallery />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

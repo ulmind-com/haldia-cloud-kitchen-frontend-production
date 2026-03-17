@@ -16,11 +16,20 @@ const AuthModal = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "", mobile: "" });
 
   const isLogin = authMode === "login";
+  const isForgot = authMode === "forgotPassword";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
+      if (isForgot) {
+        await authApi.forgotPassword({ email: form.email });
+        toast.success("Password reset link sent to your email!");
+        openAuthModal("login");
+        setForm({ name: "", email: "", password: "", mobile: "" });
+        return;
+      }
+
       if (isLogin) {
         const res = await authApi.login({ email: form.email, password: form.password });
         const userData = res.data.user || res.data;
@@ -72,17 +81,19 @@ const AuthModal = () => {
 
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-foreground">
-              {isLogin ? "Welcome back" : "Create account"}
+              {isForgot ? "Reset Password" : isLogin ? "Welcome back" : "Create account"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {isLogin
+              {isForgot
+                ? "Enter your email to receive a password reset link"
+                : isLogin
                 ? "Sign in to access your orders and cart"
                 : "Join us for the best food delivery experience"}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
+            {!isLogin && !isForgot && (
               <>
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -124,28 +135,41 @@ const AuthModal = () => {
               />
             </div>
 
-            <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className={`${inputClass} pr-10`}
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+            {!isForgot && (
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    className={`${inputClass} pr-10`}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                {isLogin && (
+                  <div className="mt-2 text-right">
+                    <button
+                      type="button"
+                      onClick={() => openAuthModal("forgotPassword")}
+                      className="text-xs font-medium text-primary hover:underline"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
 
             <motion.button
               type="submit"
@@ -153,19 +177,31 @@ const AuthModal = () => {
               whileTap={{ scale: 0.97 }}
               className="w-full rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:brightness-110 disabled:opacity-50"
             >
-              {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
+              {loading ? "Please wait..." : isForgot ? "Send Reset Link" : isLogin ? "Sign In" : "Create Account"}
             </motion.button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-            <button
-              onClick={() => openAuthModal(isLogin ? "register" : "login")}
-              className="font-semibold text-primary hover:underline"
-            >
-              {isLogin ? "Sign Up" : "Sign In"}
-            </button>
-          </p>
+          {!isForgot ? (
+            <p className="mt-4 text-center text-sm text-muted-foreground">
+              {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+              <button
+                onClick={() => openAuthModal(isLogin ? "register" : "login")}
+                className="font-semibold text-primary hover:underline"
+              >
+                {isLogin ? "Sign Up" : "Sign In"}
+              </button>
+            </p>
+          ) : (
+            <p className="mt-4 text-center text-sm text-muted-foreground">
+              Remembered your password?{" "}
+              <button
+                onClick={() => openAuthModal("login")}
+                className="font-semibold text-primary hover:underline"
+              >
+                Sign In
+              </button>
+            </p>
+          )}
         </motion.div>
       </DialogContent>
     </Dialog>
